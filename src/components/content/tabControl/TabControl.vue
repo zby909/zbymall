@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-control">
+  <div class="tab-controlbase">
     <div class="tab-control-item"
          v-for="(item, index) in titles"
          @click="itemClick(index)" :key="index">
@@ -34,7 +34,7 @@
 </script>
 
 <style scoped>
-  .tab-control {
+  .tab-controlbase {
     display: flex;
     text-align: center;
     line-height: 40px;

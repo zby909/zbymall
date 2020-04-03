@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<maintabbar class="maintabbar"></maintabbar>
-		<router-view />
+		<keep-alive exclude="Details"><router-view /></keep-alive>
 	</div>
 </template>
 
@@ -10,14 +10,14 @@ import maintabbar from 'components/content/maintabbar/maintabbar.vue';
 export default {
 	name: 'App',
 	components: {
-		maintabbar,
+		maintabbar
 	}
 };
 </script>
 
 <style>
 @import url('assets/css/base.css');
-.maintabbar{
+.maintabbar {
 	z-index: 999;
 	background-color: white;
 }

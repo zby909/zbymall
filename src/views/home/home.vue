@@ -5,11 +5,12 @@
 				购物街
 			</template>
 		</navbar>
+		<TabControl v-show="isTabControlShow" class="tab-control" ref="TabControl2" :titles="['流行', '新款', '精选']" @tabClick="tabClick"></TabControl>
 		<Scrolltool class="content" ref="Scrolltool" :probeType="3" :pullUpLoad="true" @GetScrolldistance="GetScrolldistance" @GetScrollpullingUp="GetScrollpullingUp">
-			<homeswiper :banner="banner"></homeswiper>
+			<homeswiper :banner="banner" @Swiperimglode="Swiperimglode"></homeswiper>
 			<HomeRecommend :recommends="recommends"></HomeRecommend>
 			<FeatureView></FeatureView>
-			<TabControl class="tab-control" :titles="['流行', '新款', '精选']" @tabClick="tabClick"></TabControl>
+			<TabControl :titles="['流行', '新款', '精选']" @tabClick="tabClick" ref="TabControl1"></TabControl>
 			<Goodslist :goods="goods[defaulttype].list"></Goodslist>
 		</Scrolltool>
 		<Backtopbtn @click.native="Backtopbtn" v-show="isBacktopShow"></Backtopbtn>
@@ -46,7 +47,10 @@ export default {
 				sell: { page: 0, list: [] }
 			},
 			defaulttype: 'pop',
-			isBacktopShow: false
+			isBacktopShow: false,
+			TabControlOffsetTop: 0,
+			isTabControlShow: false,
+			saveY: 0
 		};
 	},
 	components: {
@@ -58,6 +62,34 @@ export default {
 		Goodslist,
 		Scrolltool,
 		Backtopbtn
+	},
+	//生命周期发送网络请求
+	created() {
+		this.gethomedatafun();
+		this.gethomegoodsfun('pop');
+		this.gethomegoodsfun('new');
+		this.gethomegoodsfun('sell');
+	},
+	destroyed() {
+		console.log('home destroyed');
+	},
+	activated() {
+		// 设定离开该组件时的滚动高度
+		this.$refs.Scrolltool.refresh();
+		this.$refs.Scrolltool.scrolltop(0, this.saveY, 0);
+	},
+	deactivated() {
+		// 记录离开该组件时的滚动高度
+		this.saveY = this.$refs.Scrolltool.Scrolltool.y;
+	},
+	mounted() {
+		//刷新滚动高度 防止图片未加载造成的滚动卡顿
+		//防抖 防止重复调用refresh
+		const refresh = this.debounce(this.$refs.Scrolltool.refresh, 50);
+		// 通过事件总线获取到图片已经加载完这个状态imgisloded
+		this.$bus.$on('imgisloded', () => {
+			refresh();
+		});
 	},
 	methods: {
 		//子传父获取当前点击的类别-流行-新款。。。。。
@@ -73,6 +105,8 @@ export default {
 					this.defaulttype = 'sell';
 					break;
 			}
+			this.$refs.TabControl2.currentIndex = index;
+			this.$refs.TabControl1.currentIndex = index;
 		},
 		//回到顶部 调用该组件的回到指定位置方法
 		Backtopbtn() {
@@ -80,10 +114,28 @@ export default {
 		}, //监听滚动距离
 		GetScrolldistance(Scrolldistance) {
 			this.isBacktopShow = -Scrolldistance.y > 900;
+			this.isTabControlShow = -Scrolldistance.y >= this.TabControlOffsetTop;
 		}, //上拉加载更多（下一页）
 		GetScrollpullingUp() {
-			console.log('dd');
+			console.log('上拉加载');
 			this.gethomegoodsfun(this.defaulttype);
+		},
+		//防抖 防止重复调用refresh
+		debounce(fun, delay) {
+			let timer = null;
+			return function() {
+				if (timer) {
+					clearTimeout(timer);
+				}
+				timer = setTimeout(() => {
+					fun.apply(this);
+				}, delay);
+			};
+		},
+		//当轮播图加载完再获取TabControl距离上方的高度
+		Swiperimglode() {
+			this.TabControlOffsetTop = this.$refs.TabControl1.$el.offsetTop;
+			console.log(this.TabControlOffsetTop);
 		},
 		/* 网络请求 */
 		gethomedatafun() {
@@ -97,16 +149,12 @@ export default {
 			gethomegoods(type, page).then(res => {
 				this.goods[type].list.push(...res.data.list);
 				this.goods[type].page += 1;
-				this.$refs.Scrolltool.finishPullUp()
+				//每次下拉操作之后等待1秒后 回调这个函数才能进行下一次下拉操作
+				setTimeout(() => {
+					this.$refs.Scrolltool.finishPullUp();
+				}, 500);
 			});
 		}
-	},
-	//生命周期发送网络请求
-	created() {
-		this.gethomedatafun();
-		this.gethomegoodsfun('pop');
-		this.gethomegoodsfun('new');
-		this.gethomegoodsfun('sell');
 	}
 };
 </script>
@@ -135,7 +183,7 @@ export default {
 	z-index: 999;
 }
 .tab-control {
-	position: sticky;
-	top: 44px;
+	position: relative;
+	z-index: 999;
 }
 </style>

@@ -32,6 +32,7 @@ export default {
 		this.Scrolltool.on('pullingUp', () => {
 			this.$emit('GetScrollpullingUp');
 		});
+		// console.log(this.Scrolltool);
 	},
 	data() {
 		return {
@@ -46,6 +47,10 @@ export default {
 		//每次下拉操作之后回调这个函数才能进行下一次下拉操作
 		finishPullUp(){
 			this.Scrolltool.finishPullUp()
+		},
+		//刷新滚动高度 防止图片未加载造成的滚动卡顿
+		refresh(){
+			this.Scrolltool.refresh()
 		}
 	}
 };

@@ -1,6 +1,6 @@
 <template>
-	<div class="goods-item">
-		<img :src="goodsitem.show.img" alt="" />
+	<div class="goods-item" @click="godetails">
+		<img :src="goodsitem.show.img" alt="" @load="imgisloded" />
 		<div class="goods-info">
 			<p>{{ goodsitem.title }}</p>
 			<span class="price">{{ goodsitem.price }}</span>
@@ -18,6 +18,14 @@ export default {
 			default() {
 				return {};
 			}
+		}
+	},
+	methods:{
+		imgisloded(){
+			this.$bus.$emit('imgisloded')
+		},
+		godetails(){
+			this.$router.push('/details/'+this.goodsitem.iid)
 		}
 	}
 };
