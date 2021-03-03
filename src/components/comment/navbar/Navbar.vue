@@ -18,6 +18,8 @@
 		text-align: center;
 		height: 45px;
 		line-height: 44px;
+		position: relative;
+		z-index: 999;
 	}
 	.left,.right{
 		width: 60px;

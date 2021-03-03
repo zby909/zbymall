@@ -30,6 +30,7 @@ export default {
 	text-align: center;
 	line-height: 49px;
 	font-size: 14px;
+	box-shadow: 0 -1px 1px rgba(100, 100, 100, 0.05);
 }
 .bar-item {
 	flex: 1;

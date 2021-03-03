@@ -55,7 +55,7 @@
 				<li></li>
 				<li></li>
 				<li></li>
-				<li>1</li>
+				<li>---故事总有结局---</li>
 			</ul>
 		</Scrolltool>
 		<DetailsBottomBar></DetailsBottomBar>
@@ -87,7 +87,7 @@ export default {
 		// 2.根据iid请求详情数据
 		getDetail(this.iid).then(res => {
 			// 1.获取顶部的图片轮播数据
-			console.log(res);
+			console.log(1,res);
 			const data = res.result;
 			this.topImages = data.itemInfo.topImages;
 		});

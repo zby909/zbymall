@@ -15,7 +15,7 @@ export default {
 <style scoped>
 #tabbar {
 	display: flex;
-	position: fixed;
+	position: absolute;
 	left: 0;
 	right: 0;
 	bottom: 0;

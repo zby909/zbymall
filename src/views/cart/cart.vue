@@ -1,12 +1,27 @@
 <template>
-	<h1>购物车</h1>
+	<div id="cart">
+		<navbar class="cart-navbar">
+			<template v-slot:center>
+				购物车
+			</template>
+		</navbar>
+	</div>
 </template>
 
 <script>
-	export default{
-		
+//页面上方的提示栏
+import navbar from 'components/comment/navbar/Navbar.vue';
+export default {
+	name: 'cart',
+	components: {
+		navbar
 	}
+};
 </script>
 
-<style>
+<style scoped>
+.cart-navbar {
+	background-color: skyblue;
+	color: white;
+}
 </style>
